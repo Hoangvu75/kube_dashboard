@@ -2,6 +2,14 @@
 
 https://cautious-trout-x6vpgqx464f9v9x-8001.app.github.dev/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/login
 
+minikube start
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
+kubectl create serviceaccount dashboard-admin-sa -n kubernetes-dashboard
+kubectl create clusterrolebinding dashboard-admin-sa-binding --clusterrole=cluster-admin --serviceaccount=kubernetes-dashboard:dashboard-admin-sa
+kubectl get secret $(kubectl get serviceaccount dashboard-admin-sa -n kubernetes-dashboard -o jsonpath="{.secrets[0].name}") -n kubernetes-dashboard -o jsonpath="{.data.token}" | base64 --decode
+kubectl proxy
+
 kubernetes-dashboard get serviceaccount
 kubectl -n kubernetes-dashboard get clusterrolebinding
 kubectl -n kubernetes-dashboard get secret
