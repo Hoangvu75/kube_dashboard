@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: producer
+  labels:
+    app: producer
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: producer
+  template:
+    metadata:
+      labels:
+        app: producer
+    spec:
+      containers:
+      - name: producer
+        image: hoangvu753/test-repo:test-producer
+        ports:
+        - containerPort: 3001
+        env:
+        - name: RABBITMQ_URL
+          value: "amqp://user:password@rabbitmq:5672"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: producer
+spec:
+  selector:
+    app: producer
+  ports:
+  - protocol: TCP
+    port: 3001
+    targetPort: 3001
